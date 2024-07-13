@@ -1,0 +1,69 @@
+{% extends "catalogo/base_home.html" %}
+{% load static %}
+
+{% block title %}Libros{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Lista de Libros</h1>
+  <form id="searchForm" class="form-inline mb-4" method="GET" action="{% url 'libros' %}">
+    <input class="form-control mr-sm-2" type="search" name="q" placeholder="Buscar libros" aria-label="Search" value="{{ query }}" required>
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+  </form>
+  
+  {% if libros %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Título</th>
+        <th scope="col">Año</th>
+        <th scope="col">Descripción</th>
+        <th scope="col">Categoría</th>
+        <th scope="col">Autores</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for libro in libros %}
+      <tr>
+        <td>{{ libro.titulo }}</td>
+        <td>{{ libro.anio_publicacion }}</td>
+        <td>{{ libro.descripcion_breve }}</td>
+        <td>{{ libro.categoria.nombre }}</td>
+        <td>
+          {% for autor in libro.autores.all %}
+            {{ autor.nombre }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </td>
+        <td>
+          <button class="btn btn-info btn-sm ver-mas" data-toggle="modal" data-target="#modalVerMas" data-libro-id="{{ libro.id }}">Ver más</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No se encontraron libros.</p>
+  {% endif %}
+</div>
+
+<!-- Ver Más -->
+<div class="modal fade" id="modalVerMas" tabindex="-1" role="dialog" aria-labelledby="modalVerMasLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalVerMasLabel">Detalles del Libro</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
